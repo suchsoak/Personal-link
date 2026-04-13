@@ -40,9 +40,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    const linkCards = document.querySelectorAll('.link-card');
+    const interactiveCards = document.querySelectorAll('.link-card, .project-card');
 
-    linkCards.forEach(card => {
+    interactiveCards.forEach(card => {
         card.addEventListener('mousemove', (e) => {
             const rect = card.getBoundingClientRect();
             const x = e.clientX - rect.left;
@@ -51,23 +51,34 @@ document.addEventListener('DOMContentLoaded', () => {
             const centerX = rect.width / 2;
             const centerY = rect.height / 2;
 
-            const maxRotate = 4;
+            const maxRotate = card.classList.contains('project-card') ? 6 : 4;
 
             const rotateX = ((y - centerY) / centerY) * -maxRotate;
             const rotateY = ((x - centerX) / centerX) * maxRotate;
 
-            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02) translateY(-4px)`;
+            card.style.setProperty('--x', `${(x / rect.width) * 100}%`);
+            card.style.setProperty('--y', `${(y / rect.height) * 100}%`);
+
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02) translateY(-5px)`;
         });
 
         card.addEventListener('mouseleave', () => {
-
             card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1) translateY(0)';
             card.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
         });
 
         card.addEventListener('mouseenter', () => {
-
             card.style.transition = 'none';
         });
     });
+
+    const backToTop = document.getElementById('back-to-top');
+    if (backToTop) {
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    }
 });
